@@ -75,31 +75,31 @@ class image :
     handle = None
     img_height = None
     img_width = None
+    isValid = False
 
     def __init__(self, filename):
-        print "hello my name is: {0}".format(filename)
-        self.handle = pygame.image.load(filename).convert()
-        self.img_height = self.handle.get_height()
-        self.img_width  = self.handle.get_width()
+        print "Loading image {0}".format(filename)
+        try:
+            self.handle = pygame.image.load(filename).convert()
+            self.img_height = self.handle.get_height()
+            self.img_width  = self.handle.get_width()
+            self.isValid = True
+        except:
+            print "Failed to load image: {0}".format(filename)
 
     def get_size(self):
         return (self.img_width, self.img_height)
 
     def scale(self, screen_width, screen_height):
-        print "sh: %d  sw: %d" % (screen_height, screen_width)
-
         # If the image isn't already the same size as the screen, it needs to be scaled
         if ((self.img_height != screen_height) or (self.img_width != screen_width)):
             # Determine what the height will be if we expand the image to fill the whole width
             scaled_height = int((float(screen_width) / self.img_width) * self.img_height)
-            print "scaled_height {0}".format(scaled_height)
             # If the scaled image is going to be taller than the screen, then limit the maximum height and scale the width instead
             if (scaled_height > screen_height):
-                print "1"
                 scaled_height = screen_height
                 scaled_width = int((float(screen_height) / self.img_height) * self.img_width)
             else:
-                print"2"
                 scaled_width = screen_width
 
             img_bitsize = self.handle.get_bitsize()
@@ -108,29 +108,29 @@ class image :
             # image, use transform.scale() instead which will be ugly but at least will work
             if (img_bitsize == 24 or img_bitsize == 32):
                 self.handle = pygame.transform.smoothscale(self.handle, (scaled_width, scaled_height))
-                print "3 sh: %d  sw: %d" % (scaled_height, scaled_width)
             else:
                 self.handle = pygame.transform.scale(self.handle, (scaled_width, scaled_height))
-                print "4 sh: %d  sw: %d" % (scaled_height, scaled_width)
 
-            print "oh: %d  ow: %d" % (self.img_height, self.img_width)
             self.img_height = scaled_height
             self.img_width = scaled_width
-            print "ih: %d  iw: %d" % (self.img_height, self.img_width)
 
+# ...and so it begins
 
-# ...and begin
-config = ConfigParser.ConfigParser()
-config.read("./config.ini")
-print config.sections()
-delay = int(config.get("Common", "delay"))
-print "delay %d" % (delay)
-
+# a screen to display things on
 scope = pyscope()
+# handy config reader object
+config = ConfigParser.ConfigParser()
+# the types of files we are interested in
+filetypes = ('./*.PNG', './*.png', './*.JPG', './*.jpg', './*.JPEG', './*.jpeg')
 
-for x in range(0,1):
+for x in range(0,2):
 
-    filetypes = ('./*.PNG', './*.png', './*.JPG', './*.jpg', './*.JPEG', './*.jpeg')
+    # Read the config (yes again, it may have changed)
+    config.read("./config.ini")
+    print "Config available: {0}".format(config.sections())
+    delay = int(config.get("Common", "delay"))
+    print "Delay for this run: %d seconds" % (delay)
+
     files_grabbed = []
     for files in filetypes:
         files_grabbed.extend(glob.glob(files))
@@ -140,5 +140,6 @@ for x in range(0,1):
 
     for f in files_grabbed:
         i = image(f)
-        scope.display(i)
+        if i.isValid:
+            scope.display(i)
         time.sleep(delay)

@@ -5,7 +5,8 @@ import random
 import glob
 
 class pyscope :
-    screen = None;
+    screen = None
+    size   = None
 
     def __init__(self):
         "Ininitializes a new pygame screen using the framebuffer"
@@ -34,14 +35,29 @@ class pyscope :
         if not found:
             raise Exception('No suitable video driver found!')
 
-        size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-        print "Framebuffer size: %d x %d" % (size[0], size[1])
-        self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+        self.size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+        print "Framebuffer size: %d x %d" % (self.size[0], self.size[1])
+        self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
         # Clear the screen to start
         self.screen.fill((0, 0, 0))
         # Initialise font support
         pygame.font.init()
         # Render the screen
+        pygame.display.update()
+
+    def display(self, image):
+        image.scale(self.size[0], self.size[1])
+
+        # Get updated image size
+        (iw, ih) = image.get_size()
+
+        dsize = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+        xp = (dsize[0] - iw) / 2  # find location to center image on screen
+        yp = (dsize[1] - ih) / 2
+
+        # Blank the screen incase the image doesn't fill it all
+        self.screen.fill([0, 0, 0])
+        self.screen.blit(image.handle,(xp,yp))
         pygame.display.update()
 
     def __del__(self):
@@ -56,11 +72,18 @@ class pyscope :
 
 class image :
     handle = None
+    img_height = None
+    img_width = None
 
     def __init__(self, filename):
         name = filename
         print "hello my name is: {0}".format(name)
         self.handle = pygame.image.load(i).convert()
+        self.img_height = self.handle.get_height()
+        self.img_width  = self.handle.get_width()
+
+    def get_size(self):
+        return (self.img_height, self.img_width)
 
     # The centre of the raw image (unscaled)
     def centre(self):
@@ -70,9 +93,7 @@ class image :
         yp = (dsize[1] - isize[1]) / 2
         return (xp,yp)
 
-    def scale(self):
-        img_height = img.get_height()
-        img_width = img.get_width()
+    def scale(self, x_size, y_size):
 
         # If the image isn't already the same size as the screen, it needs to be scaled
         if ((img_height != self.screen_height) or (img_width != self.screen_width)):
@@ -98,18 +119,6 @@ class image :
                 # Determine where to place the image so it will appear centered on the screen
                 display_x = (self.screen_width - scaled_width) / 2
                 display_y = (self.screen_height - scaled_height) / 2
-        else:
-            # No scaling was applied, so image is already full-screen
-            display_x = 0
-            display_y = 0
-
-    def display(self, scope):
-        (xp, yp) = self.centre()
-        # Blank the screen incase the image doesn't fill it all
-        scope.screen.fill([0, 0, 0])
-        scope.screen.blit(self.handle,(xp,yp))
-        pygame.display.update()
-
 
 scope = pyscope()
 
@@ -121,6 +130,6 @@ for x in range(0,1):
 
     for i in images:
         thingy = image(i)
-        error this is arse about. pass image to screen not the other way around.
-        thingy.display(scope)
-        #time.sleep(2)
+        scope.display(thingy)
+#        thingy.display(scope)
+        time.sleep(1)

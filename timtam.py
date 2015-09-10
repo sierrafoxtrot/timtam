@@ -1,3 +1,4 @@
+import ConfigParser
 import os
 import pygame
 import time
@@ -117,9 +118,17 @@ class image :
             self.img_width = scaled_width
             print "ih: %d  iw: %d" % (self.img_height, self.img_width)
 
+
+# ...and begin
+config = ConfigParser.ConfigParser()
+config.read("./config.ini")
+print config.sections()
+delay = int(config.get("Common", "delay"))
+print "delay %d" % (delay)
+
 scope = pyscope()
 
-for x in range(0,2):
+for x in range(0,1):
 
     filetypes = ('./*.PNG', './*.png', './*.JPG', './*.jpg', './*.JPEG', './*.jpeg')
     files_grabbed = []
@@ -132,4 +141,4 @@ for x in range(0,2):
     for f in files_grabbed:
         i = image(f)
         scope.display(i)
-        time.sleep(2)
+        time.sleep(delay)

@@ -83,42 +83,44 @@ class image :
         self.img_width  = self.handle.get_width()
 
     def get_size(self):
-        return (self.img_height, self.img_width)
+        return (self.img_width, self.img_height)
 
-    # The centre of the raw image (unscaled)
-    def centre(self):
-        isize = self.handle.get_size()
-        dsize = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-        xp = (dsize[0] - isize[0]) / 2  # find location to center image on screen
-        yp = (dsize[1] - isize[1]) / 2
-        return (xp,yp)
-
-    def scale(self, x_size, y_size):
+    def scale(self, screen_width, screen_height):
+        print "sh: %d  sw: %d" % (screen_height, screen_width)
 
         # If the image isn't already the same size as the screen, it needs to be scaled
-        if ((img_height != self.screen_height) or (img_width != self.screen_width)):
+        if ((self.img_height != screen_height) or (self.img_width != screen_width)):
             # Determine what the height will be if we expand the image to fill the whole width
-            scaled_height = int((float(self.screen_width) / img_width) * img_height)
-
+            scaled_height = int((float(screen_width) / self.img_width) * self.img_height)
+            print "scaled_height {0}".format(scaled_height)
             # If the scaled image is going to be taller than the screen, then limit the maximum height and scale the width instead
-            if (scaled_height > self.screen_height):
-                scaled_height = self.screen_height
-                scaled_width = int((float(self.screen_height) / img_height) * img_width)
+            if (scaled_height > screen_height):
+                print "1"
+                scaled_height = screen_height
+                scaled_width = int((float(screen_height) / self.img_height) * self.img_width)
             else:
-                scaled_width = self.screen_width
+                print"2"
+                scaled_width = screen_width
 
-                img_bitsize = img.get_bitsize()
+            img_bitsize = self.handle.get_bitsize()
 
-                # transform.smoothscale() can only be used for 24-bit and 32-bit images. If this is not a 24-bit or 32-bit
-                # image, use transform.scale() instead which will be ugly but at least will work
-                if (img_bitsize == 24 or img_bitsize == 32):
-                    img = pygame.transform.smoothscale(img, [scaled_width, scaled_height])
-                else:
-                    img = pygame.transform.scale(img, [scaled_width, scaled_height])
+            # transform.smoothscale() can only be used for 24-bit and 32-bit images. If this is not a 24-bit or 32-bit
+            # image, use transform.scale() instead which will be ugly but at least will work
+            if (img_bitsize == 24 or img_bitsize == 32):
+                self.handle = pygame.transform.smoothscale(self.handle, (scaled_width, scaled_height))
+                print "3 sh: %d  sw: %d" % (scaled_height, scaled_width)
+            else:
+                self.handle = pygame.transform.scale(self.handle, (scaled_width, scaled_height))
+                print "4 sh: %d  sw: %d" % (scaled_height, scaled_width)
 
-                # Determine where to place the image so it will appear centered on the screen
-                display_x = (self.screen_width - scaled_width) / 2
-                display_y = (self.screen_height - scaled_height) / 2
+            # Determine where to place the image so it will appear centered on the screen
+#            display_x = (screen_width - scaled_width) / 2
+#            display_y = (screen_height - scaled_height) / 2
+
+            print "oh: %d  ow: %d" % (self.img_height, self.img_width)
+            self.img_height = scaled_height
+            self.img_width = scaled_width
+            print "ih: %d  iw: %d" % (self.img_height, self.img_width)
 
 scope = pyscope()
 

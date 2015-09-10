@@ -49,14 +49,14 @@ class pyscope :
     def display(self, image):
         image.scale(self.size[0], self.size[1])
 
-        # Get updated image size
+        # Get updated image dimensions
         (iw, ih) = image.get_size()
 
-        dsize = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-        xp = (dsize[0] - iw) / 2  # find location to center image on screen
-        yp = (dsize[1] - ih) / 2
+        display_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+        xp = (display_size[0] - iw) / 2  # find location to center image on screen
+        yp = (display_size[1] - ih) / 2
 
-        # Blank the screen incase the image doesn't fill it all
+        # Blank the screen in case the image doesn't fill it all
         self.screen.fill([0, 0, 0])
         self.screen.blit(image.handle,(xp,yp))
         pygame.display.update()
@@ -123,6 +123,7 @@ config = ConfigParser.ConfigParser()
 # the types of files we are interested in
 filetypes = ('./*.PNG', './*.png', './*.JPG', './*.jpg', './*.JPEG', './*.jpeg')
 
+#while True:
 for x in range(0,2):
 
     # Read the config (yes again, it may have changed)

@@ -76,9 +76,8 @@ class image :
     img_width = None
 
     def __init__(self, filename):
-        name = filename
-        print "hello my name is: {0}".format(name)
-        self.handle = pygame.image.load(i).convert()
+        print "hello my name is: {0}".format(filename)
+        self.handle = pygame.image.load(filename).convert()
         self.img_height = self.handle.get_height()
         self.img_width  = self.handle.get_width()
 
@@ -113,10 +112,6 @@ class image :
                 self.handle = pygame.transform.scale(self.handle, (scaled_width, scaled_height))
                 print "4 sh: %d  sw: %d" % (scaled_height, scaled_width)
 
-            # Determine where to place the image so it will appear centered on the screen
-#            display_x = (screen_width - scaled_width) / 2
-#            display_y = (screen_height - scaled_height) / 2
-
             print "oh: %d  ow: %d" % (self.img_height, self.img_width)
             self.img_height = scaled_height
             self.img_width = scaled_width
@@ -124,14 +119,17 @@ class image :
 
 scope = pyscope()
 
-for x in range(0,1):
+for x in range(0,2):
 
-    images = glob.glob("./*.jpg")
+    filetypes = ('./*.PNG', './*.png', './*.JPG', './*.jpg', './*.JPEG', './*.jpeg')
+    files_grabbed = []
+    for files in filetypes:
+        files_grabbed.extend(glob.glob(files))
+    files_grabbed.sort()
 
-    print images
+    print files_grabbed
 
-    for i in images:
-        thingy = image(i)
-        scope.display(thingy)
-#        thingy.display(scope)
-        time.sleep(1)
+    for f in files_grabbed:
+        i = image(f)
+        scope.display(i)
+        time.sleep(2)

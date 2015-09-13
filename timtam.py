@@ -27,6 +27,7 @@ class pyscope :
                 os.putenv('SDL_VIDEODRIVER', driver)
             try:
                 pygame.display.init()
+                pygame.mouse.set_visible(False) # hide the pointer
             except pygame.error:
                 print 'Driver: {0} failed.'.format(driver)
                 continue
@@ -110,6 +111,9 @@ class image :
                 self.handle = pygame.transform.smoothscale(self.handle, (scaled_width, scaled_height))
             else:
                 self.handle = pygame.transform.scale(self.handle, (scaled_width, scaled_height))
+
+#            print "Scaled: bits: {0} sh: {1} sw: {2}  ih: {3}  iw: {4}  oh: {5}  ow: {6}".\
+#                format(img_bitsize, screen_height, screen_width, scaled_height, scaled_width, self.img_height, self.img_width)
 
             self.img_height = scaled_height
             self.img_width = scaled_width

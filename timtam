@@ -80,7 +80,6 @@ class image :
     isValid = False
 
     def __init__(self, filename):
-        print "Loading image {0}".format(filename)
         try:
             self.handle = pygame.image.load(filename).convert()
             self.img_height = self.handle.get_height()

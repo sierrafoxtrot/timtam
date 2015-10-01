@@ -127,9 +127,7 @@ config = ConfigParser.ConfigParser()
 # the types of files we are interested in
 filetypes = ('./*.PNG', './*.png', './*.JPG', './*.jpg', './*.JPEG', './*.jpeg')
 
-#while True:
-for x in range(0,2):
-
+while True:
     # Read the config (yes again, it may have changed)
     config.read("./config.ini")
     print "Config available: {0}".format(config.sections())
@@ -139,11 +137,17 @@ for x in range(0,2):
     files_grabbed = []
     for files in filetypes:
         files_grabbed.extend(glob.glob(files))
-    files_grabbed.sort()
+    print "Images to show: ".format(files_grabbed.sort())
 
     print files_grabbed
 
     for f in files_grabbed:
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    print "Exiting"
+                    exit()
         i = image(f)
         if i.isValid:
             scope.display(i)

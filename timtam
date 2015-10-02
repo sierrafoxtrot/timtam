@@ -22,7 +22,7 @@ import time
 import random
 import glob
 
-class pyscope :
+class fb :
     screen = None
     size   = None
 
@@ -112,7 +112,8 @@ class image :
         if ((self.img_height != screen_height) or (self.img_width != screen_width)):
             # Determine what the height will be if we expand the image to fill the whole width
             scaled_height = int((float(screen_width) / self.img_width) * self.img_height)
-            # If the scaled image is going to be taller than the screen, then limit the maximum height and scale the width instead
+            # If the scaled image is going to be taller than the screen, then limit
+            # the maximum height and scale the width instead
             if (scaled_height > screen_height):
                 scaled_height = screen_height
                 scaled_width = int((float(screen_height) / self.img_height) * self.img_width)
@@ -121,8 +122,9 @@ class image :
 
             img_bitsize = self.handle.get_bitsize()
 
-            # transform.smoothscale() can only be used for 24-bit and 32-bit images. If this is not a 24-bit or 32-bit
-            # image, use transform.scale() instead which will be ugly but at least will work
+            # transform.smoothscale() can only be used for 24-bit and 32-bit images. If this is
+            # not a 24-bit or 32-bit image, use transform.scale() instead which will be ugly but
+            # at least will work
             if (img_bitsize == 24 or img_bitsize == 32):
                 self.handle = pygame.transform.smoothscale(self.handle, (scaled_width, scaled_height))
             else:
@@ -137,22 +139,26 @@ class image :
 # ...and so it begins
 
 # a screen to display things on
-scope = pyscope()
+framebuffer = fb()
 # handy config reader object
 config = ConfigParser.ConfigParser()
 # the types of files we are interested in
-filetypes = ('./*.PNG', './*.png', './*.JPG', './*.jpg', './*.JPEG', './*.jpeg')
+filetypes = ['*.PNG', '*.png', '*.JPG', '*.jpg', '*.JPEG', '*.jpeg']
 
 while True:
     # Read the config (yes again, it may have changed)
     config.read("./config.ini")
     print "Config available: {0}".format(config.sections())
+
     delay = int(config.get("Common", "delay"))
     print "Delay for this run: %d seconds" % (delay)
 
+    image_directory = str(config.get("Common", "image_directory"))
+    print "Image location: %s" % (image_directory)
+
     files_grabbed = []
     for files in filetypes:
-        files_grabbed.extend(glob.glob(files))
+        files_grabbed.extend(glob.glob(image_directory + files))
     print "Images to show: ".format(files_grabbed.sort())
 
     print files_grabbed
@@ -166,5 +172,5 @@ while True:
                     exit()
         i = image(f)
         if i.isValid:
-            scope.display(i)
+            framebuffer.display(i)
         time.sleep(delay)

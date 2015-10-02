@@ -30,7 +30,7 @@ No. Pretty much any platform that supports PyGame should be fine. I chose the
 Pi because of price and easy availability (ok, it was mostly price).
 
 
-Notes:
+Notes (Raspberry Pi specific):
 - Needed to enable 32 bit depth on the framebuffer for the raspi:
 1. Append "bcm2708_fb.fbdepth=32" to /boot/cmdline.txt (should be possible by config.txt)
 2. Add "framebuffer_ignore_alpha=1" to /boot/config.txt

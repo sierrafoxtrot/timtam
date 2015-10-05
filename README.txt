@@ -31,6 +31,26 @@ Pi because of price and easy availability (ok, it was mostly price).
 
 
 Notes (Raspberry Pi specific):
+
+-------------------------------------------------------------------
+Raspbian (Jessie)
+
+- Cancel the GUI and login to a bash prompt
+1. Run "sudo raspi-config"
+2. Select "3 Boot Options"
+3. Select "B2 Text console, automatically logged in a 'pi' user"
+
+- Then add the following to /home/pi/.bashrc
+
+cd <timtam_install_dir> ; ./timtam
+
+- Then... reboot
+-------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------
+Raspbian (pre-Jessie)
 - Needed to enable 32 bit depth on the framebuffer for the raspi:
 1. Append "bcm2708_fb.fbdepth=32" to /boot/cmdline.txt (should be possible by config.txt)
 2. Add "framebuffer_ignore_alpha=1" to /boot/config.txt
@@ -67,6 +87,7 @@ Step 2: Add the following line to the end of the file
 replace the script name and path with correct name and path of your start-up script.
 Step 3: Save and Exit
 Press Ctrl+X to exit nano editor followed by Y to save the file.
+-------------------------------------------------------------------
 
 Scott Finneran (SierraFoxtrot)
 scottfinneran+githubATgmailDOTcom

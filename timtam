@@ -154,7 +154,7 @@ while True:
         delay = int(config.get("Common", "delay"))
     except:
         delay = 5 # Default
-    print "Delay for this run: %d seconds" % (delay)
+    print "Delay for this run: %d seconds" % delay
 
     try:
         image_directory = str(config.get("Common", "image_directory"))
@@ -166,7 +166,7 @@ while True:
         sorting = config.getboolean("Common", "sort")
     except:
         sorting = False
-    print "Sorting file list: %s" % (sorting)
+    print "Sorting file list: %s" % sorting
 
     files_grabbed = []
     for files in filetypes:

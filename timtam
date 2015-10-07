@@ -16,11 +16,12 @@
 # along with Windsock.  If not, see <http://www.gnu.org/licenses/>.
 
 import ConfigParser
+import glob
 import os
 import pygame
-import time
 import random
-import glob
+import sys
+import time
 
 class fb :
     screen = None
@@ -77,6 +78,16 @@ class fb :
         # Blank the screen in case the image doesn't fill it all
         self.screen.fill([0, 0, 0])
         self.screen.blit(image.handle,(xp,yp))
+        pygame.display.update()
+
+    def message(self, msg):
+        # Get a refernce to the system font, size 30
+        font = pygame.font.Font(None, 30)
+        # Render some white text (pyScope 0.1) onto text_surface
+        text_surface = font.render(msg, True, (255, 255, 255))  # White text
+        # Blit the text at 10, 0
+        self.screen.blit(text_surface, (10, 0))
+        # Update the display
         pygame.display.update()
 
     def __del__(self):
@@ -136,6 +147,15 @@ class image :
             self.img_height = scaled_height
             self.img_width = scaled_width
 
+def check_for_abort():
+    events = pygame.event.get()
+    for event in events:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:
+                print "Exiting"
+                sys.exit()
+
+
 # ...and so it begins
 
 # a screen to display things on
@@ -176,14 +196,14 @@ while True:
         files_grabbed.sort(key=lambda x: x.lower()) # Sort ignoring case
     print "Images to show: %s\n" % format(files_grabbed)
 
-    for f in files_grabbed:
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
-                    print "Exiting"
-                    exit()
-        i = image(f)
-        if i.isValid:
-            framebuffer.display(i)
+    if not files_grabbed:
+        framebuffer.message("No Images to show.")
+        check_for_abort()
         time.sleep(delay)
+    else:
+        for f in files_grabbed:
+            check_for_abort()
+            i = image(f)
+            if i.isValid:
+                framebuffer.display(i)
+            time.sleep(delay)

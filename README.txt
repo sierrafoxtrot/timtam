@@ -9,12 +9,17 @@ So.... it's a photo frame? Yes.
 
 What was the itch that Windsock originally scratched?
 
-I needed to display a slideshow at remote locations. Each location had a
-reasonably large flat panel display. With the addition of a Raspberry Pi, a
-network connection and a cron job to run rsync (to update the images) the
-system was running.
+The generic itch was that I needed to display a slideshow at remote
+locations. Each location had a reasonably large flat panel display. With the
+addition of a Raspberry Pi, a network connection and a cron job to run rsync
+(to update the images) the system was running.
 
-All the install details are included below in case they are useful to anyone.
+The specific requirements (in case they are of interest to anyone else) are
+that I need the slideshow to be easily updated by muggles. This was achieved by
+mounting a samba shared drive (that they could easily update). The slideshow
+display had to be able to handle sporadic updates and periods with zero images
+in the case where someone deletes all the images before copying the new
+ones. All the install details are included below.
 
 
 

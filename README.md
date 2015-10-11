@@ -1,13 +1,11 @@
-What is timtam?
+## What is timtam?
 
 It's a simple program that will display a series of image files on the
 framebuffer filling the screen as best as possible.
 
 So.... it's a photo frame? Yes.
 
-
-
-What was the itch that timtam originally scratched?
+## What was the itch that timtam originally scratched?
 
 The generic itch was that I needed to display a slideshow at remote
 locations. Each location had a reasonably large flat panel display. With the
@@ -23,22 +21,21 @@ ones. All the install details are included below.
 
 
 
-How does it work?
+## How does it work?
 
 PyGame does all the heavy lifting. It really is pretty awesome.
 
 
 
-Does it only work on the Raspberry Pi?
+## Does it only work on the Raspberry Pi?
 
 No. Pretty much any platform that supports PyGame should be fine. I chose the
 Pi because of price and easy availability (ok, it was mostly price).
 
 
-Notes (Raspberry Pi specific):
+## Notes (Raspberry Pi specific):
 
--------------------------------------------------------------------
-#Raspbian (Jessie)
+### Raspbian (Jessie)
 
 Cancel the GUI and login to a bash prompt
 1. Run `sudo raspi-config`
@@ -52,7 +49,7 @@ Cancel the GUI and login to a bash prompt
 5. Then... reboot
 
 
-#Raspbian (pre-Jessie)
+### Raspbian (pre-Jessie)
 
 - Needed to enable 32 bit depth on the framebuffer for the raspi:
 1. Append `bcm2708_fb.fbdepth=32` to /boot/cmdline.txt (should be possible by config.txt)
@@ -60,7 +57,7 @@ Cancel the GUI and login to a bash prompt
 
 (If on console, the pi user can run the timtam program. Otherwise, needs to be root.)
 
-##How to automatically login to Raspberry Pi text console as pi user.
+## How to automatically login to Raspberry Pi text console as pi user.
 
 Step 1: Open a terminal session and edit inittab file.
 `sudo nano /etc/inittab`
@@ -83,7 +80,7 @@ Press Ctrl+X to exit nano editor followed by Y to save the file and then press E
 
 Reboot the pi and it will boot straight on to the shell prompt pi@raspberrypi without prompting you to enter username or password. But this isn't enough; you need your Pi to automatically run some command or a script. which is explained in the next section.
 
-##Run a Script after login
+### Run a Script after login
 
 How to automatically run a script after login.
 Step 1: Open a terminal session and edit the file /etc/profile
@@ -93,7 +90,7 @@ Step 2: Add the following line to the end of the file
 replace the script name and path with correct name and path of your start-up script.
 Step 3: Save and Exit
 Press Ctrl+X to exit nano editor followed by Y to save the file.
--------------------------------------------------------------------
+
 
 Scott Finneran (SierraFoxtrot)
 scottfinneran+githubATgmailDOTcom

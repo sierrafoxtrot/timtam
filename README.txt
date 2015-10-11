@@ -7,7 +7,7 @@ So.... it's a photo frame? Yes.
 
 
 
-What was the itch that Windsock originally scratched?
+What was the itch that timtam originally scratched?
 
 The generic itch was that I needed to display a slideshow at remote
 locations. Each location had a reasonably large flat panel display. With the
@@ -38,51 +38,52 @@ Pi because of price and easy availability (ok, it was mostly price).
 Notes (Raspberry Pi specific):
 
 -------------------------------------------------------------------
-Raspbian (Jessie)
+#Raspbian (Jessie)
 
-- Cancel the GUI and login to a bash prompt
-1. Run "sudo raspi-config"
-2. Select "3 Boot Options"
-3. Select "B2 Text console, automatically logged in a 'pi' user"
+Cancel the GUI and login to a bash prompt
+1. Run `sudo raspi-config`
+2. Select `3 Boot Options`
+3. Select `B2 Text console, automatically logged in a 'pi' user`
 
-- Then add the following to /home/pi/.bashrc
+4. Then add the following to /home/pi/.bashrc
 
-cd <timtam_install_dir> ; ./timtam
+`cd <timtam_install_dir> ; ./timtam`
 
-- Then... reboot
--------------------------------------------------------------------
-
+5. Then... reboot
 
 
--------------------------------------------------------------------
-Raspbian (pre-Jessie)
+#Raspbian (pre-Jessie)
+
 - Needed to enable 32 bit depth on the framebuffer for the raspi:
-1. Append "bcm2708_fb.fbdepth=32" to /boot/cmdline.txt (should be possible by config.txt)
-2. Add "framebuffer_ignore_alpha=1" to /boot/config.txt
+1. Append `bcm2708_fb.fbdepth=32` to /boot/cmdline.txt (should be possible by config.txt)
+2. Add `framebuffer_ignore_alpha=1` to /boot/config.txt
 
-- If on console, the pi user can run the timtam program. Otherwise, needs to be root.
+(If on console, the pi user can run the timtam program. Otherwise, needs to be root.)
 
-- How to automatically login to Raspberry Pi text console as pi user.
+##How to automatically login to Raspberry Pi text console as pi user.
 
 Step 1: Open a terminal session and edit inittab file.
-sudo nano /etc/inittab
+`sudo nano /etc/inittab`
 
 Step 2: Disable the getty program.
 Navigate to the following line in inittab
-1:2345:respawn:/sbin/getty 115200 tty1
+`1:2345:respawn:/sbin/getty 115200 tty1`
 
 And add a # at the beginning of the line to comment it out
-#1:2345:respawn:/sbin/getty 115200 tty1
+`#1:2345:respawn:/sbin/getty 115200 tty1`
 
 Step 3: Add login program to inittab.
-Add the following line just below the commented line1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1
+Add the following line just below the commented line
+`1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1`
+
 This will run the login program with pi user and without any authentication
 
 Step 4: Save and Exit.
 Press Ctrl+X to exit nano editor followed by Y to save the file and then press Enter to confirm the filename.
 
 Reboot the pi and it will boot straight on to the shell prompt pi@raspberrypi without prompting you to enter username or password. But this isn't enough; you need your Pi to automatically run some command or a script. which is explained in the next section.
-- Run a Script after login
+
+##Run a Script after login
 
 How to automatically run a script after login.
 Step 1: Open a terminal session and edit the file /etc/profile

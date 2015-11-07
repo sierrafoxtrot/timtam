@@ -15,11 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Windsock.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 import ConfigParser
 import glob
 import os
 import pygame
 import random
+import re
 import sys
 import time
 
@@ -33,7 +36,7 @@ class fb :
         # http://www.karoltomala.com/blog/?p=679
         disp_no = os.getenv("DISPLAY")
         if disp_no:
-            print "I'm running under X display = {0}".format(disp_no)
+            print("I'm running under X display =", disp_no)
 
         # Check which frame buffer drivers are available
         # Start with fbcon since directfb hangs with composite output
@@ -47,7 +50,7 @@ class fb :
                 pygame.display.init()
                 pygame.mouse.set_visible(False) # hide the pointer
             except pygame.error:
-                print 'Driver: {0} failed.'.format(driver)
+                print("Driver:", driver, "failed.")
                 continue
             found = True
             break
@@ -56,7 +59,7 @@ class fb :
             raise Exception('No suitable video driver found!')
 
         self.size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-        print "Framebuffer size: %d x %d" % (self.size[0], self.size[1])
+        print("Framebuffer size:", self.size[0], "x", self.size[1])
         self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
         # Clear the screen to start
         self.screen.fill((0, 0, 0))
@@ -113,7 +116,7 @@ class image :
             self.img_width  = self.handle.get_width()
             self.isValid = True
         except:
-            print "Failed to load image: {0}".format(filename)
+            print("Failed to load image:", filename)
 
     def get_size(self):
         return (self.img_width, self.img_height)
@@ -152,7 +155,7 @@ def check_for_abort():
     for event in events:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_q:
-                print "Exiting"
+                print("Exiting")
                 sys.exit()
 
 
@@ -168,39 +171,57 @@ filetypes = ['*.PNG', '*.png', '*.JPG', '*.jpg', '*.JPEG', '*.jpeg']
 while True:
     # Read the config (yes again, it may have changed)
     config.read("./config.ini")
-    print "Config available: {0}".format(config.sections())
+    print("Config available:", config.sections())
 
     try:
-        delay = int(config.get("Common", "delay"))
+        default_delay = int(config.get("Common", "delay"))
     except:
-        delay = 5 # Default
-    print "Delay for this run: %d seconds" % delay
+        default_delay = 5 # Default
+    print("Default delay for this run:", default_delay, "seconds")
 
     try:
         image_directory = str(config.get("Common", "image_directory"))
     except:
         image_directory = os.getcwd()
-    print "Image location: %s" % image_directory
+    print("Image location:", image_directory)
 
     try:
         sorting = config.getboolean("Common", "sort")
     except:
         sorting = False
-    print "Sorting file list: %s" % sorting
+    print("Sorting file list:", sorting)
 
     try:
         no_images_message = str(config.get("Common", "no_images_msg"))
     except:
         no_images_message = "No Images to show."
-    print "Missing images msg: %s" % no_images_message
+    print("Missing images msg:", no_images_message)
+
+    try:
+        duration_in_filename = config.getboolean("Common", "duration_in_filename")
+    except:
+        duration_in_filename = False
+    print("Duration in filename:", duration_in_filename)
 
     files_grabbed = []
     for files in filetypes:
         files_grabbed.extend(glob.glob(os.path.join(image_directory, files)))
 
+    file_times = {}
+    for f in files_grabbed:
+        if duration_in_filename:
+            basename = os.path.splitext(os.path.basename(f))[0]
+            try:
+                file_times[f] = map(eval, re.findall('\(\d+\)', basename))[-1]
+            except:
+                file_times[f] = default_delay
+        else:
+            file_times[f] = default_delay
+
     if sorting:
         files_grabbed.sort(key=lambda x: x.lower()) # Sort ignoring case
-    print "Images to show: %s\n" % format(files_grabbed)
+
+    print("Images to show:", files_grabbed, "\n")
 
     if not files_grabbed:
         framebuffer.message(no_images_message)
@@ -212,4 +233,5 @@ while True:
             i = image(f)
             if i.isValid:
                 framebuffer.display(i)
-            time.sleep(delay)
+            print("Showing", str(f), "for", file_times[f], "seconds")
+            time.sleep(file_times[f])
